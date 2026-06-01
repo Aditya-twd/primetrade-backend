@@ -37,9 +37,19 @@ A default admin is seeded on first boot: `admin@primetrade.ai` / `Admin@12345`
 ## Environment
 See [`.env.example`](./.env.example) for all variables (`MONGO_URI`, `JWT_*`, `CORS_ORIGIN`, `SEED_ADMIN_*`).
 
+## Run with Docker Compose (API + MongoDB)
+Brings up the API together with a MongoDB instance — no local Node or Mongo needed:
+```bash
+docker compose up --build
+# API http://localhost:5000/api/v1 · Swagger /api/v1/docs
+```
+The frontend is deployed separately (Vercel), so it isn't part of this compose file.
+
 ## Deployment
 - Stateless API → run multiple replicas behind a load balancer.
-- Set production secrets via the host's environment (never commit `.env`).
+- Set production secrets via the host's environment (never commit `.env`):
+  `MONGO_URI`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, and `CORS_ORIGIN`
+  (include your frontend's URL, e.g. `https://primetrade-frontend-pied.vercel.app`).
 - A `Dockerfile` is included; build with `docker build -t primetrade-api .`.
 - Health check for probes: `GET /api/v1/health`.
 
