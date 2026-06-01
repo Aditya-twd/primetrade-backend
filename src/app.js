@@ -22,9 +22,10 @@ export function createApp() {
   app.use(
     cors({
       origin(origin, cb) {
-        // allow same-origin / curl (no Origin) and any whitelisted origin
-        if (!origin || env.corsOrigins.includes(origin)) return cb(null, true);
-        return cb(new Error(`Origin ${origin} not allowed by CORS`));
+        // Allow same-origin / curl (no Origin) and any whitelisted origin.
+        // For a disallowed origin we return false (no CORS headers → browser
+        // blocks it) rather than throwing, which would surface as a 500.
+        cb(null, !origin || env.corsOrigins.includes(origin));
       },
       credentials: true,
     })

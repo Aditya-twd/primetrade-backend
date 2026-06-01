@@ -5,12 +5,15 @@ import { env } from '../config/env.js';
 
 const REFRESH_COOKIE = 'refreshToken';
 
-// httpOnly so JS can't read it (XSS-resistant); SameSite=strict to limit CSRF.
+// httpOnly so JS can't read it (XSS-resistant).
+// In production the frontend (Vercel) and API are on different origins, so the
+// cookie must be SameSite=None + Secure to be sent cross-site. In dev (same-site,
+// http://localhost) we use Strict + non-secure so the cookie works over http.
 function refreshCookieOptions() {
   return {
     httpOnly: true,
     secure: env.isProd,
-    sameSite: 'strict',
+    sameSite: env.isProd ? 'none' : 'strict',
     path: '/api/v1/auth',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
   };
