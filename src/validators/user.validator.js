@@ -1,0 +1,7 @@
+import { body, param } from 'express-validator';
+import { ROLES } from '../models/User.js';
+
+export const updateRoleRules = [
+  param('id').isMongoId().withMessage('Invalid user id'),
+  body('role').isIn(Object.values(ROLES)).withMessage(`Role must be one of: ${Object.values(ROLES).join(', ')}`),
+];
